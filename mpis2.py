@@ -6,30 +6,31 @@ actions = ['включение сигнализации', 'выключение 
 
 # Таблица вероятностей
 transition_table = {
-    ('open', 'включение сигнализации'): ['open', 'close'],
-    ('open', 'выключение сигнализации'): ['open', 'close'],
-    ('open', 'автозапуск двигателя'): ['open', 'close'],
-    ('close', 'включение сигнализации'): ['close', 'open'],
-    ('close', 'выключение сигнализации'): ['close', 'open'],
-    ('close', 'автозапуск двигателя'): ['close', 'open'],
+    ('open', 'включение сигнализации'): ['open', 'open', 'close', 'close'],
+    ('open', 'выключение сигнализации'): ['open', 'open', 'close', 'close'],
+    ('open', 'автозапуск двигателя'): ['open', 'open', 'close', 'close'],
+    ('close', 'включение сигнализации'): ['open', 'open', 'close', 'close'],
+    ('close', 'выключение сигнализации'): ['open', 'open', 'close', 'close'],
+    ('close', 'автозапуск двигателя'): ['open', 'open', 'close', 'close'],
 }
 
 # Вероятности перехода
 probabilities = {
-    ('open', 'включение сигнализации'): [0.9, 0.1],
-    ('open', 'выключение сигнализации'): [0.8, 0.2],
-    ('open', 'автозапуск двигателя'): [0.8, 0.2],
-    ('close', 'включение сигнализации'): [0.8, 0.2],
-    ('close', 'выключение сигнализации'): [0.5, 0.5],
-    ('close', 'автозапуск двигателя'): [0.1, 0.9],
+    ('open', 'включение сигнализации'): [0.05, 0.05, 0.8, 0.1],
+    ('open', 'выключение сигнализации'): [0.05, 0.05, 0.1, 0.8],
+    ('open', 'автозапуск двигателя'): [0.05, 0.05, 0.1, 0.8],
+    ('close', 'включение сигнализации'): [0.2, 0.7, 0.05, 0.05],
+    ('close', 'выключение сигнализации'): [0.8, 0.1, 0.05, 0.05],
+    ('close', 'автозапуск двигателя'): [0.05, 0.05, 0.7, 0.2],
 }
+
 
 # Функция для выполнения перехода
 def transition(current_state, action):
     if (current_state, action) in transition_table:
         next_states = transition_table[(current_state, action)]
         probs = probabilities[(current_state, action)]
-        # Выбор следующего состояния с учетом вероятностей
+        # Мы выбираем следующее состояние и получаем вероятность
         next_state = random.choices(next_states, weights=probs)[0]
         probability_of_transition = probs[next_states.index(next_state)]
         return next_state, probability_of_transition
@@ -75,6 +76,7 @@ def main():
         if continue_choice != 'y':
             print("Завершение работы автомата.")
             break
+
 
 if __name__ == "__main__":
     main()
